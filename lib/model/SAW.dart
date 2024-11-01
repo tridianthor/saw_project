@@ -1,6 +1,6 @@
 import 'package:saw_project/model/AlternativeData.dart';
 import 'package:saw_project/model/Criteria.dart';
-import 'package:saw_project/model/RatingValue.dart';
+import 'package:saw_project/model/RatingComponent.dart';
 
 class Saw{
   List<AlternativeData> alternatives;

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:saw_project/constants/Dimens.dart';
 import 'package:saw_project/model/Criteria.dart';
 import 'package:saw_project/model/SAW.dart';
 import 'package:saw_project/presentation/component/CustomAppBar.dart';
@@ -17,7 +18,7 @@ class InputCriteria extends StatefulWidget {
 
 class _InputCriteriaState extends State<InputCriteria> {
   List<List<dynamic>> criteriaControllers = [
-    [TextEditingController(), 0, TextEditingController()],
+    [0, TextEditingController(), 0, TextEditingController()],
   ];
 
   List<DropdownMenuEntry> dropdownItems = [
@@ -31,8 +32,35 @@ class _InputCriteriaState extends State<InputCriteria> {
     )
   ];
 
+  List<DropdownMenuEntry> inputTypeDropdownItems = [
+    const DropdownMenuEntry(
+      value: 0,
+      label: "Teks - Jumlah",
+    ),
+    const DropdownMenuEntry(
+      value: 1,
+      label: "Teks - Matching",
+    ),
+    const DropdownMenuEntry(
+      value: 2,
+      label: "Numerik - Komparasi",
+    ),
+    const DropdownMenuEntry(
+      value: 3,
+      label: "Dropdown - Pilihan",
+    ),
+  ];
+
+  var deviceWidth;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    deviceWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -45,7 +73,7 @@ class _InputCriteriaState extends State<InputCriteria> {
                 caption: "Tambahkan form",
                 function: () {
                   setState(() {
-                    criteriaControllers.add([TextEditingController(), 0, TextEditingController()]);
+                    criteriaControllers.add([0, TextEditingController(), 0, TextEditingController()]);
                   });
                 },
                 width: 160,
@@ -53,7 +81,6 @@ class _InputCriteriaState extends State<InputCriteria> {
               CustomMaterialButton(
                 caption: "Simpan dan Lanjut",
                 function: () {
-
                   if (criteriaControllers.length < 2) {
                     throw Exception("Must have more than 1 criteria");
                   }
@@ -61,21 +88,23 @@ class _InputCriteriaState extends State<InputCriteria> {
                   int index = 0;
                   try {
                     for (var item in criteriaControllers) {
-                      if (item[0].text.isEmpty || item[2].text.isEmpty) {
+                      if (item[1].text.isEmpty || item[3].text.isEmpty) {
                         throw Exception("Check input. Form can't be empty");
                       }
 
-                      var criteriaController = item[0];
-                      var criteriaCategory = item[1];
-                      var weightController = item[2];
+                      var inputType = item[0];
+                      var criteriaController = item[1];
+                      var criteriaCategory = item[2];
+                      var weightController = item[3];
 
                       Criteria criteria = Criteria(
+                        inputType: inputType,
                         criteria: criteriaController.text.trim(),
                         weight: double.parse(weightController.text.trim()),
                         criteriaCategory: criteriaCategory,
                       );
 
-                      if(!TemporaryCalculation().saw.criterias.contains(criteria)){
+                      if (!TemporaryCalculation().saw.criterias.contains(criteria)) {
                         TemporaryCalculation().saw.criterias.add(criteria);
                       }
                     }
@@ -116,8 +145,30 @@ class _InputCriteriaState extends State<InputCriteria> {
                               mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
+                                const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text("Tipe Input dan pencocokan"),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: DropdownMenu(
+                                    width: index == 0 ? deviceWidth * 0.955 : deviceWidth * 0.835,
+                                    initialSelection: 0,
+                                    dropdownMenuEntries: inputTypeDropdownItems,
+                                    onSelected: (value) {
+                                      log("value : $value");
+                                      setState(() {
+                                        criteriaControllers[index][0] = value;
+                                      });
+                                    },
+                                    hintText: "Input Type",
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
                                 TextField(
-                                  controller: criteriaControllers[index][0],
+                                  controller: criteriaControllers[index][1],
                                   decoration: const InputDecoration(
                                     hintText: "Nama kriteria",
                                   ),
@@ -133,7 +184,7 @@ class _InputCriteriaState extends State<InputCriteria> {
                                       onSelected: (value) {
                                         log("value : $value");
                                         setState(() {
-                                          criteriaControllers[index][1] = value;
+                                          criteriaControllers[index][2] = value;
                                         });
                                       },
                                     ),
@@ -142,7 +193,7 @@ class _InputCriteriaState extends State<InputCriteria> {
                                     ),
                                     Flexible(
                                       child: TextField(
-                                        controller: criteriaControllers[index][2],
+                                        controller: criteriaControllers[index][3],
                                         decoration: const InputDecoration(
                                           hintText: "Bobot kriteria",
                                         ),

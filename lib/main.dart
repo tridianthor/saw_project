@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saw_project/constants/Dimens.dart';
 import 'package:saw_project/presentation/Home.dart';
+import 'package:saw_project/presentation/InputRating.dart';
 import 'package:saw_project/utils/Route.dart';
 
 void main() {
@@ -23,10 +24,17 @@ class MyApp extends StatelessWidget {
             borderRadius: BorderRadius.circular(Dimens.defaultRoundedRadius),
           ),
         ),
+        dropdownMenuTheme: DropdownMenuThemeData(
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(Dimens.defaultRoundedRadius),
+            ),
+          )
+        )
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
-      home: const Home(),
-      initialRoute: Home.ID,
+      home: const InputRating(),
+      initialRoute: InputRating.ID,
     );
   }
 }
