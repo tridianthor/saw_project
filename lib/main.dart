@@ -1,10 +1,20 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:saw_project/constants/Dimens.dart';
 import 'package:saw_project/presentation/Home.dart';
 import 'package:saw_project/presentation/InputRating.dart';
 import 'package:saw_project/utils/Route.dart';
+import 'package:window_size/window_size.dart';
 
 void main() {
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    WidgetsFlutterBinding.ensureInitialized();
+    setWindowTitle('SAW');
+    setWindowMinSize(const Size(600, 900));
+    setWindowMaxSize(const Size(600, 900));
+  }
+
   runApp(const MyApp());
 }
 
@@ -33,8 +43,8 @@ class MyApp extends StatelessWidget {
         )
       ),
       onGenerateRoute: RouteGenerator.generateRoute,
-      home: const InputRating(),
-      initialRoute: InputRating.ID,
+      home: const Home(),
+      initialRoute: Home.ID,
     );
   }
 }

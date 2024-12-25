@@ -3,7 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:saw_project/presentation/Home.dart';
 import 'package:saw_project/presentation/InputAlternatives.dart';
 import 'package:saw_project/presentation/InputCriteria.dart';
+import 'package:saw_project/presentation/InputData.dart';
 import 'package:saw_project/presentation/InputRating.dart';
+import 'package:saw_project/presentation/Result.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings){
@@ -29,6 +31,16 @@ class RouteGenerator {
         return MaterialPageRoute(
           settings: settings,
           builder: (context) => const InputRating(),
+        );
+      case InputData.ID:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) => const InputData(),
+        );
+      case Result.ID:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) => const Result(),
         );
     }
   }

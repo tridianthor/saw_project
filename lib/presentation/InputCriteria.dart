@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:saw_project/constants/Dimens.dart';
 import 'package:saw_project/model/Criteria.dart';
 import 'package:saw_project/model/SAW.dart';
+import 'package:saw_project/presentation/InputRating.dart';
 import 'package:saw_project/presentation/component/CustomAppBar.dart';
 import 'package:saw_project/presentation/component/CustomButton.dart';
 
@@ -85,8 +86,9 @@ class _InputCriteriaState extends State<InputCriteria> {
                     throw Exception("Must have more than 1 criteria");
                   }
 
-                  int index = 0;
                   try {
+                    double totalWeight = 0;
+
                     for (var item in criteriaControllers) {
                       if (item[1].text.isEmpty || item[3].text.isEmpty) {
                         throw Exception("Check input. Form can't be empty");
@@ -97,22 +99,29 @@ class _InputCriteriaState extends State<InputCriteria> {
                       var criteriaCategory = item[2];
                       var weightController = item[3];
 
-                      Criteria criteria = Criteria(
-                        inputType: inputType,
+                      double weight = double.parse(weightController.text.trim());
+                      totalWeight += weight;
+
+                      /*Criteria criteria = Criteria(
                         criteria: criteriaController.text.trim(),
-                        weight: double.parse(weightController.text.trim()),
+                        weight: weight,
                         criteriaCategory: criteriaCategory,
                       );
 
-                      if (!TemporaryCalculation().saw.criterias.contains(criteria)) {
-                        TemporaryCalculation().saw.criterias.add(criteria);
-                      }
+                      if (!SawInstance().saw.criterias.contains(criteria)) {
+                        SawInstance().saw.criterias.add(criteria);
+                      }*/
+                    }
+
+                    if(totalWeight != 1){
+                      throw Exception("total weight must be 1");
+                    }else{
+                      log("saw criteria count : ${SawInstance().saw.criterias.length}");
+                      Navigator.pushNamed(context, InputRating.ID);
                     }
                   } catch (exception, stackTrace) {
                     log("$exception\n$stackTrace");
                   }
-
-                  log("saw criteria count : ${TemporaryCalculation().saw.criterias.length}");
                 },
                 width: 150,
               ),

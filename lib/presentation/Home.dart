@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:saw_project/model/Criteria.dart';
+import 'package:saw_project/model/SAW.dart';
 import 'package:saw_project/presentation/InputAlternatives.dart';
 import 'package:saw_project/presentation/component/CustomButton.dart';
 
@@ -27,9 +29,11 @@ class _HomeState extends State<Home> {
               const SizedBox(
                 height: 16,
               ),
-              CustomMaterialButton(caption: "Buat Perhitungan Baru", function: () {
-                Navigator.pushNamed(context, InputAlternatives.ID);
-              }),
+              CustomMaterialButton(
+                  caption: "Buat Perhitungan Baru",
+                  function: () {
+                    Navigator.pushNamed(context, InputAlternatives.ID);
+                  }),
             ],
           ),
         ),

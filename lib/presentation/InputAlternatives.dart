@@ -1,10 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:quickalert/quickalert.dart';
 import 'package:saw_project/constants/AppTheme.dart';
 import 'package:saw_project/model/AlternativeData.dart';
+import 'package:saw_project/model/Criteria.dart';
+import 'package:saw_project/model/RatingComponent.dart';
+import 'package:saw_project/model/RatingPerCriteria.dart';
 import 'package:saw_project/model/SAW.dart';
 import 'package:saw_project/presentation/InputCriteria.dart';
+import 'package:saw_project/presentation/InputData.dart';
 import 'package:saw_project/presentation/component/CustomAppBar.dart';
 import 'package:saw_project/presentation/component/CustomButton.dart';
 
@@ -23,7 +28,11 @@ class _InputAlternativesState extends State<InputAlternatives> {
   @override
   void initState() {
     super.initState();
-    TemporaryCalculation().saw.clear();
+    SawInstance().saw.clear();
+
+    SawInstance().saw.criterias = Criteria.generateCriteria();
+    SawInstance().saw.ratingComponents = RatingComponent.generateRatingComponent();
+    SawInstance().saw.ratingPerCriteria = RatingPerCriteria.generateRatingPerCriteria();
   }
 
   @override
@@ -48,12 +57,11 @@ class _InputAlternativesState extends State<InputAlternatives> {
               CustomMaterialButton(
                 caption: "Simpan dan Lanjut",
                 function: () {
-                  if (alternativeControllers.length < 2) {
-                    throw Exception("Must have more than 1 alternative");
-                  }
-
-                  int index = 0;
                   try {
+                    if (alternativeControllers.length < 2) {
+                      throw Exception("Must have more than 1 alternative");
+                    }
+
                     for (var controller in alternativeControllers) {
                       if (controller.text.isEmpty) {
                         throw Exception("Check input. Form can't be empty");
@@ -63,17 +71,18 @@ class _InputAlternativesState extends State<InputAlternatives> {
                         alternative: controller.text.trim(),
                       );
 
-                      if (!TemporaryCalculation().saw.alternatives.contains(alternative)) {
-                        TemporaryCalculation().saw.alternatives.add(alternative);
+                      if (!SawInstance().saw.alternatives.contains(alternative)) {
+                        SawInstance().saw.alternatives.add(alternative);
                       }
                     }
                   } catch (exception, stackTrace) {
                     log("$exception\n$stackTrace");
+                    QuickAlert.show(context: context, type: QuickAlertType.error, text: exception.toString());
                   }
 
-                  log("saw alternative count : ${TemporaryCalculation().saw.alternatives.length}");
+                  log("saw alternative count : ${SawInstance().saw.alternatives.length}");
 
-                  Navigator.pushNamed(context, InputCriteria.ID);
+                  Navigator.pushNamed(context, InputData.ID);
                 },
                 width: 150,
               ),
