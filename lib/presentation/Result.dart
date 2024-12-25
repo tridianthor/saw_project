@@ -13,16 +13,13 @@ class Result extends StatefulWidget {
 }
 
 class _ResultState extends State<Result> {
-  AlternativeData? winner;
-  double? score;
+  Winners winners = SawInstance().getWinners();
 
   @override
   void initState() {
-    winner = SawInstance().getWinner()['winner'];
-    score = SawInstance().getWinner()['score'];
-
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -32,14 +29,23 @@ class _ResultState extends State<Result> {
           caption: "Hasil perhitungan",
         ),
         body: Container(
-          margin: const EdgeInsets.only(bottom: 90),
+          margin: const EdgeInsets.only(bottom: 90, right: 30, left: 30),
           child: Column(
             children: [
               const SizedBox(
                 height: 16,
               ),
               const Text("Hasil akhir kalkulasi :"),
-              Text("Produk ${winner!.alternative} merupakan produk yang terbaik dengan skor akhir $score"),
+              if(winners.indices.length == 1)
+                Text("Produk ${winners.indices.first} merupakan produk terbaik dengan skor akhir ${winners.value}")
+              else
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: winners.indices.length,
+                  itemBuilder: (context, index) {
+                    return Text("-Produk ${SawInstance().saw.alternatives[index].alternative} merupakan salah satu produk terbaik dengan skor akhir ${winners.value}");
+                  },
+                )
             ],
           ),
         ),

@@ -131,6 +131,7 @@ class SawInstance {
   }
 
   normalizeMatrixAndCalculateVector() {
+    saw.rankedList.clear();
     saw.matrix.forEach((String key, List element) {
       List normalizedValue = element.map((value) {
         int criteriaIndex = 0;
@@ -149,13 +150,43 @@ class SawInstance {
       }
       saw.rankedList.add(vector);
     });
+
+    log("ranked list: ${saw.rankedList}");
   }
 
-  getWinner(){
-    int winnerIndex = saw.rankedList.indexOf(saw.rankedList.reduce(math.max));
-    return {
-      "winner": saw.alternatives[winnerIndex],
-      "score": saw.rankedList[winnerIndex]
-    };
+  getWinners(){
+    Winners winners = getAllMaxDoublesWithIndex(saw.rankedList);
+    return winners;
   }
+
+  List<double> findMaxDoubles(List<double> list, int count) {
+    // Sort the list in descending order
+    list.sort((a, b) => b.compareTo(a));
+
+    // Extract the top 'count' elements
+    return list.sublist(0, math.min(count, list.length));
+  }
+}
+
+class Winners {
+  final double value;
+  final List<int> indices;
+
+  Winners(this.value, this.indices);
+}
+
+Winners getAllMaxDoublesWithIndex(List<double> list) {
+  double maxValue = double.negativeInfinity;
+  List<int> maxIndices = [];
+
+  for (int i = 0; i < list.length; i++) {
+    if (list[i] > maxValue) {
+      maxValue = list[i];
+      maxIndices = [i];
+    } else if (list[i] == maxValue) {
+      maxIndices.add(i);
+    }
+  }
+
+  return Winners(maxValue, maxIndices);
 }
